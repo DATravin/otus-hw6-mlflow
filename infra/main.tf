@@ -64,6 +64,7 @@ module "database" {
   mysql_database_name   = var.mysql_database_name
   mysql_user_name       = var.mysql_user_name
   mysql_user_password   = var.mysql_user_password
+  provider_config       = var.yc_config
 }
 
 resource "local_file" "variables_file" {

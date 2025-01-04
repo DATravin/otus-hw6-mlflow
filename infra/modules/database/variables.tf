@@ -13,6 +13,15 @@
 #   description = "Yandex Cloud Folder ID"
 # }
 
+variable "provider_config" {
+  description = "Yandex Cloud configuration"
+  type = object({
+    zone      = string
+    folder_id = string
+    token     = string
+    cloud_id  = string
+  })
+}
 
 # из yandex_vpc_network.network.id
 variable "network_id" {
