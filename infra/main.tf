@@ -39,6 +39,18 @@ module "compute" {
   provider_config    = var.yc_config
 }
 
+module "mlflow" {
+  source             = "./modules/mlflow"
+  instance_user      = var.yc_instance_user
+  instance_name      = var.yc_instance_mlflow_name
+  service_account_id = module.iam.service_account_id
+  subnet_id          = module.network.subnet_id
+  ubuntu_image_id    = var.ubuntu_image_mlflow_id
+  public_key_path    = var.public_key_path
+  private_key_path   = var.private_key_path
+  provider_config    = var.yc_config
+}
+
 resource "local_file" "variables_file" {
   content = jsonencode({
     # общие переменные
@@ -76,7 +88,7 @@ resource "null_resource" "import_variables" {
     source      = "${path.root}/modules/iam/authorized_key.json"
     destination = local.authorized_key_path
   }
-  
+
   provisioner "file" {
     source      = "./variables.json"
     destination = local.variables_path
