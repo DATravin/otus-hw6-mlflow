@@ -3,7 +3,7 @@ variable "instance_user" {
   type        = string
 }
 
-variable "instance_name" {
+variable "yc_instance_mlflow_name" {
   description = "Name of the compute instance"
   type        = string
 }
@@ -18,7 +18,7 @@ variable "subnet_id" {
   type        = string
 }
 
-variable "ubuntu_image_id" {
+variable "ubuntu_image_mlflow_id" {
   description = "ID of the Ubuntu image"
   type        = string
 }
@@ -42,4 +42,3 @@ variable "provider_config" {
     cloud_id  = string
   })
 }
-
