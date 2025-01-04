@@ -128,6 +128,8 @@ resource "null_resource" "update_env" {
       BUCKET_NAME=${module.storage.bucket}
       ACCESS_KEY=${module.iam.access_key}
       SECRET_KEY=${module.iam.secret_key}
+      MLFLOW_HOST=${module.mlflow.external_ip_address}
+      MLFLOW_ADMIN_PASSWORD=${module.mlflow.instance_id}
 
       # Замена пустых переменных в .env
       sed -i "s|^AIRFLOW_HOST=.*|AIRFLOW_HOST=$AIRFLOW_HOST|" ../.env
@@ -136,6 +138,8 @@ resource "null_resource" "update_env" {
       sed -i "s|^S3_BUCKET_NAME=.*|S3_BUCKET_NAME=$BUCKET_NAME|" ../.env
       sed -i "s|^S3_ACCESS_KEY=.*|S3_ACCESS_KEY=$ACCESS_KEY|" ../.env
       sed -i "s|^S3_SECRET_KEY=.*|S3_SECRET_KEY=$SECRET_KEY|" ../.env
+      sed -i "s|^MLFLOW_HOST=.*|MLFLOW_HOST=$MLFLOW_HOST|" ../.env
+      sed -i "s|^MLFLOW_ADMIN_PASSWORD=.*|MLFLOW_ADMIN_PASSWORD=$MLFLOW_ADMIN_PASSWORD|" ../.env
     EOT
   }
 
