@@ -84,6 +84,17 @@ resource "local_file" "variables_file" {
     DP_SA_PATH                = local.authorized_key_path
     DP_SA_ID                  = module.iam.service_account_id
     DP_SECURITY_GROUP_ID      = module.network.security_group_id
+    # Data base
+    DB_HOST                   = module.database.db_host_fqdn
+    DB_USER                   = var.mysql_user_name
+    DB_PASS                   = var.mysql_user_password
+    DB_PORT                   = 3306
+    DB_NAME                   = var.mysql_database_name
+    # MLFLOW
+    MLFLOW_HOST               = module.mlflow.external_ip_address
+    # AIRFLOW
+    AIRFLOW_HOST              = module.compute.external_ip_address
+
   })
   filename        = "./variables.json"
   file_permission = "0600"
@@ -157,7 +168,7 @@ resource "null_resource" "update_env" {
       sed -i "s|^S3_SECRET_KEY=.*|S3_SECRET_KEY=$SECRET_KEY|" ../.env
       sed -i "s|^MLFLOW_HOST=.*|MLFLOW_HOST=$MLFLOW_HOST|" ../.env
       sed -i "s|^MLFLOW_ADMIN_PASSWORD=.*|MLFLOW_ADMIN_PASSWORD=$MLFLOW_ADMIN_PASSWORD|" ../.env
-      sed -i "s|^DB_HOST=.*|DB_HOST=$DB_HOST/" ../.env
+      sed -i "s|^DB_HOST=.*|DB_HOST=$DB_HOST|" ../.env
     EOT
   }
 
