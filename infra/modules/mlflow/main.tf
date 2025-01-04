@@ -1,7 +1,7 @@
 resource "yandex_compute_instance" "vm" {
   name               = var.instance_name
   service_account_id = var.service_account_id
-  
+
   scheduling_policy {
     preemptible = true
   }
@@ -39,12 +39,12 @@ resource "yandex_compute_instance" "vm" {
     source      = "${path.module}/scripts/setup.sh"
     destination = "/home/${var.instance_user}/setup.sh"
   }
-  
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x /home/${var.instance_user}/setup.sh",
-      "sudo /home/${var.instance_user}/setup.sh"
-    ]
-  }
+
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "chmod +x /home/${var.instance_user}/setup.sh",
+  #     "sudo /home/${var.instance_user}/setup.sh"
+  #   ]
+  # }
 
 }
