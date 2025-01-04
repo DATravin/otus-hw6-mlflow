@@ -1,9 +1,13 @@
 variable "yc_instance_user" {
-  type = string  
+  type = string
 }
 
 variable "yc_instance_name" {
-  type = string  
+  type = string
+}
+
+variable "yc_instance_mlflow_name" {
+  type = string
 }
 
 variable "yc_network_name" {
@@ -28,6 +32,10 @@ variable "yc_storage_endpoint_url" {
 }
 
 variable "ubuntu_image_id" {
+  type    = string
+}
+
+variable "ubuntu_image_mlflow_id" {
   type    = string
 }
 
