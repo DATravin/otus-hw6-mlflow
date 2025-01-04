@@ -51,6 +51,21 @@ module "mlflow" {
   provider_config    = var.yc_config
 }
 
+module "database" {
+  source                = "./modules/database"
+  network_id            = module.network.network_id
+  subnet_id             = module.network.subnet_id
+  yc_zone               = var.yc_config.zone
+  yc_subnet_name        = var.yc_subnet_name
+  yc_network_name       = var.yc_network_name
+  yc_mysql_cluster_name = var.yc_mysql_cluster_name
+  yc_mysql_version      = var.yc_mysql_version
+  yc_mysql_environment  = var.yc_mysql_environment
+  mysql_database_name   = var.mysql_database_name
+  mysql_user_name       = var.mysql_user_name
+  mysql_user_password   = var.mysql_user_password
+}
+
 resource "local_file" "variables_file" {
   content = jsonencode({
     # общие переменные
@@ -130,6 +145,7 @@ resource "null_resource" "update_env" {
       SECRET_KEY=${module.iam.secret_key}
       MLFLOW_HOST=${module.mlflow.external_ip_address}
       MLFLOW_ADMIN_PASSWORD=${module.mlflow.instance_id}
+      DB_HOST=${module.database.db_host_fqdn}
 
       # Замена пустых переменных в .env
       sed -i "s|^AIRFLOW_HOST=.*|AIRFLOW_HOST=$AIRFLOW_HOST|" ../.env
@@ -140,11 +156,13 @@ resource "null_resource" "update_env" {
       sed -i "s|^S3_SECRET_KEY=.*|S3_SECRET_KEY=$SECRET_KEY|" ../.env
       sed -i "s|^MLFLOW_HOST=.*|MLFLOW_HOST=$MLFLOW_HOST|" ../.env
       sed -i "s|^MLFLOW_ADMIN_PASSWORD=.*|MLFLOW_ADMIN_PASSWORD=$MLFLOW_ADMIN_PASSWORD|" ../.env
+      sed -i "s|^DB_HOST=.*|DB_HOST=$DB_HOST/" ../.env
     EOT
   }
 
   depends_on = [
     module.iam,
-    module.storage
+    module.storage,
+    modele.database
   ]
 }

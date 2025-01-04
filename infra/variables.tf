@@ -60,3 +60,27 @@ variable "yc_config" {
 variable "airflow_db_conn_default" {
   type = string
 }
+
+variable "yc_mysql_cluster_name" {
+  type = string
+}
+
+variable "yc_mysql_version" {
+  type = string
+}
+
+variable "yc_mysql_environment" {
+  type = string
+}
+
+variable "mysql_database_name" {
+  type = string
+}
+
+variable "mysql_user_name" {
+  type = string
+}
+
+variable "mysql_user_password" {
+  type = string
+}
