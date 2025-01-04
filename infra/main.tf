@@ -164,6 +164,6 @@ resource "null_resource" "update_env" {
   depends_on = [
     module.iam,
     module.storage,
-    modele.database
+    module.database
   ]
 }
