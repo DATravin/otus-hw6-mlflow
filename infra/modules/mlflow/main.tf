@@ -36,7 +36,7 @@ resource "yandex_compute_instance" "vm" {
       private_key              = file(var.private_key_path)
       access_key               = var.access_key
       secret_key               = var.secret_key
-      s3_bucket                = var.s3_bucket_name
+      s3_bucket_name           = var.s3_bucket_name
     })
   }
 
