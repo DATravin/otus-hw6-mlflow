@@ -143,12 +143,14 @@ resource "yandex_mdb_postgresql_cluster" "cluster" {
 resource "yandex_mdb_postgresql_database" "db" {
   cluster_id = yandex_mdb_postgresql_cluster.cluster.id
   name       = var.postgresql_database_name
+  owner      = yandex_mdb_postgresql_user.name
 }
 
 resource "yandex_mdb_postgresql_user" "user" {
   cluster_id = yandex_mdb_postgresql_cluster.cluster.id
   name       = var.postgresql_user_name
   password   = var.postgresql_user_password
+
 
   permission {
     database_name = yandex_mdb_postgresql_database.db.name
