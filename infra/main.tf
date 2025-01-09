@@ -200,6 +200,7 @@ resource "null_resource" "update_env" {
   depends_on = [
     module.iam,
     module.storage,
-    module.database
+    module.database,
+    module.database_pg
   ]
 }
