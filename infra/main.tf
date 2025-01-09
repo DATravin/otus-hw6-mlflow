@@ -41,21 +41,21 @@ module "compute" {
 
 
 
-module "database" {
-  source                = "./modules/database"
-  network_id            = module.network.network_id
-  subnet_id             = module.network.subnet_id
-  yc_zone               = var.yc_config.zone
-  yc_subnet_name        = var.yc_subnet_name
-  yc_network_name       = var.yc_network_name
-  yc_mysql_cluster_name = var.yc_mysql_cluster_name
-  yc_mysql_version      = var.yc_mysql_version
-  yc_mysql_environment  = var.yc_mysql_environment
-  mysql_database_name   = var.mysql_database_name
-  mysql_user_name       = var.mysql_user_name
-  mysql_user_password   = var.mysql_user_password
-  provider_config       = var.yc_config
-}
+# module "database" {
+#   source                = "./modules/database"
+#   network_id            = module.network.network_id
+#   subnet_id             = module.network.subnet_id
+#   yc_zone               = var.yc_config.zone
+#   yc_subnet_name        = var.yc_subnet_name
+#   yc_network_name       = var.yc_network_name
+#   yc_mysql_cluster_name = var.yc_mysql_cluster_name
+#   yc_mysql_version      = var.yc_mysql_version
+#   yc_mysql_environment  = var.yc_mysql_environment
+#   mysql_database_name   = var.mysql_database_name
+#   mysql_user_name       = var.mysql_user_name
+#   mysql_user_password   = var.mysql_user_password
+#   provider_config       = var.yc_config
+# }
 
 
 module "database_pg" {
@@ -111,11 +111,11 @@ resource "local_file" "variables_file" {
     DP_SA_ID                  = module.iam.service_account_id
     DP_SECURITY_GROUP_ID      = module.network.security_group_id
     # Data base
-    DB_HOST                   = module.database.db_host_fqdn
-    DB_USER                   = var.mysql_user_name
-    DB_PASS                   = var.mysql_user_password
-    DB_PORT                   = 3306
-    DB_NAME                   = var.mysql_database_name
+    # DB_HOST                   = module.database.db_host_fqdn
+    # DB_USER                   = var.mysql_user_name
+    # DB_PASS                   = var.mysql_user_password
+    # DB_PORT                   = 3306
+    # DB_NAME                   = var.mysql_database_name
     # Data base postgr
     DB_PG_HOST                   = module.database_pg.db_host_fqdn
     DB_PG_USER                   = var.postgresql_user_name
@@ -177,6 +177,8 @@ resource "null_resource" "import_variables" {
 # Запись переменных в .env файл
 # AIRFLOW_ADMIN_PASSWORD это ID виртуальной машины
 # AIRFLOW_HOST это IP виртуальной машины
+# DB_HOST={module.database.db_host_fqdn}
+#       sed -i "s|^DB_HOST=.*|DB_HOST=$DB_HOST|" ../.env
 resource "null_resource" "update_env" {
   provisioner "local-exec" {
     command = <<EOT
@@ -189,7 +191,6 @@ resource "null_resource" "update_env" {
       SECRET_KEY=${module.iam.secret_key}
       MLFLOW_HOST=${module.mlflow.external_ip_address}
       MLFLOW_ADMIN_PASSWORD=${module.mlflow.instance_id}
-      DB_HOST=${module.database.db_host_fqdn}
       DB_PG_HOST=${module.database_pg.db_host_fqdn}
 
 
@@ -202,7 +203,6 @@ resource "null_resource" "update_env" {
       sed -i "s|^S3_SECRET_KEY=.*|S3_SECRET_KEY=$SECRET_KEY|" ../.env
       sed -i "s|^MLFLOW_HOST=.*|MLFLOW_HOST=$MLFLOW_HOST|" ../.env
       sed -i "s|^MLFLOW_ADMIN_PASSWORD=.*|MLFLOW_ADMIN_PASSWORD=$MLFLOW_ADMIN_PASSWORD|" ../.env
-      sed -i "s|^DB_HOST=.*|DB_HOST=$DB_HOST|" ../.env
       sed -i "s|^DB_PG_HOST=.*|DB_PG_HOST=$DB_PG_HOST|" ../.env
     EOT
   }
@@ -210,7 +210,7 @@ resource "null_resource" "update_env" {
   depends_on = [
     module.iam,
     module.storage,
-    module.database,
+  #  module.database,
     module.database_pg
   ]
 }
