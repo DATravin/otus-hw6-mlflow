@@ -78,7 +78,7 @@ module "database_pg" {
   yc_postgresql_cluster_name = var.yc_postgresql_cluster_name
   yc_postgresql_version      = var.yc_postgresql_version
   yc_postgresql_environment  = var.yc_postgresql_environment
-  postgresql_database_name   = var.postgresql_user_name
+  postgresql_database_name   = var.postgresql_database_name
   postgresql_user_name       = var.postgresql_user_name
   postgresql_user_password   = var.postgresql_user_password
   provider_config       = var.yc_config
