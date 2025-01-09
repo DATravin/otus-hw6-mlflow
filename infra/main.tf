@@ -85,11 +85,6 @@ module "mlflow" {
   private_key_path   = var.private_key_path
   provider_config    = var.yc_config
 
-  depends_on = [
-    module.storage,
-    module.database,
-    module.database_pg
-  ]
 }
 
 resource "local_file" "variables_file" {
