@@ -84,3 +84,27 @@ variable "mysql_user_name" {
 variable "mysql_user_password" {
   type = string
 }
+
+variable "yc_postgresql_cluster_name" {
+  type = string
+}
+
+variable "yc_postgresql_version" {
+  type = string
+}
+
+variable "yc_postgresql_environment" {
+  type = string
+}
+
+variable "postgresql_database_name" {
+  type = string
+}
+
+variable "postgresql_user_name" {
+  type = string
+}
+
+variable "postgresql_user_password" {
+  type = string
+}

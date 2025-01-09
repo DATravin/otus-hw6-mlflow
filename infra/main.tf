@@ -67,6 +67,23 @@ module "database" {
   provider_config       = var.yc_config
 }
 
+
+module "database_pg" {
+  source                = "./modules/database_pg"
+  network_id            = module.network.network_id
+  subnet_id             = module.network.subnet_id
+  yc_zone               = var.yc_config.zone
+  yc_subnet_name        = var.yc_subnet_name
+  yc_network_name       = var.yc_network_name
+  yc_postgresql_cluster_name = var.yc_postgresql_cluster_name
+  yc_postgresql_version      = var.yc_postgresql_version
+  yc_postgresql_environment  = var.yc_postgresql_environment
+  postgresql_database_name   = var.postgresql_user_name
+  postgresql_user_name       = var.postgresql_user_name
+  postgresql_user_password   = var.postgresql_user_password
+  provider_config       = var.yc_config
+}
+
 resource "local_file" "variables_file" {
   content = jsonencode({
     # общие переменные
@@ -90,6 +107,12 @@ resource "local_file" "variables_file" {
     DB_PASS                   = var.mysql_user_password
     DB_PORT                   = 3306
     DB_NAME                   = var.mysql_database_name
+    # Data base postgr
+    DB_PG_HOST                   = module.database_pg.db_host_fqdn
+    DB_PG_USER                   = var.postgresql_user_name
+    DB_PG_PASS                   = var.postgresql_user_password
+    DB_PG_PORT                   = 6432
+    DB_PG_NAME                   = var.postgresql_database_name
     # MLFLOW
     MLFLOW_HOST               = module.mlflow.external_ip_address
     # AIRFLOW
@@ -158,6 +181,7 @@ resource "null_resource" "update_env" {
       MLFLOW_HOST=${module.mlflow.external_ip_address}
       MLFLOW_ADMIN_PASSWORD=${module.mlflow.instance_id}
       DB_HOST=${module.database.db_host_fqdn}
+      DB_HOST_PG=${module.database_pg.db_host_fqdn}
 
       # Замена пустых переменных в .env
       sed -i "s|^AIRFLOW_HOST=.*|AIRFLOW_HOST=$AIRFLOW_HOST|" ../.env
@@ -169,6 +193,7 @@ resource "null_resource" "update_env" {
       sed -i "s|^MLFLOW_HOST=.*|MLFLOW_HOST=$MLFLOW_HOST|" ../.env
       sed -i "s|^MLFLOW_ADMIN_PASSWORD=.*|MLFLOW_ADMIN_PASSWORD=$MLFLOW_ADMIN_PASSWORD|" ../.env
       sed -i "s|^DB_HOST=.*|DB_HOST=$DB_HOST|" ../.env
+      sed -i "s|^DB_HOST_PG=.*|DB_HOST_PG=$DB_HOST_PG|" ../.env
     EOT
   }
 
