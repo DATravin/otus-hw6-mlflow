@@ -109,15 +109,23 @@ resource "yandex_mdb_postgresql_cluster" "cluster" {
   name        = var.yc_postgresql_cluster_name
   environment = var.yc_postgresql_environment
   network_id  = var.network_id
-  version     = var.yc_postgresql_version
 
-  resources {
-    resource_preset_id = var.postgresql_resource_preset_id
-    disk_type_id       = var.postgresql_disk_type_id
-    disk_size          = var.postgresql_disk_size
+
+  config {
+
+    version     = var.yc_postgresql_version
+
+    resources {
+      resource_preset_id = var.postgresql_resource_preset_id
+      disk_type_id       = var.postgresql_disk_type_id
+      disk_size          = var.postgresql_disk_size
+    }
+
+    postgresql_config = var.postgresql_config
+
   }
 
-  postgresql_config = var.postgresql_config
+
 
   maintenance_window {
     type = "WEEKLY"
