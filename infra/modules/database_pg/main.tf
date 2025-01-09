@@ -125,12 +125,8 @@ resource "yandex_mdb_postgresql_cluster" "cluster" {
 
   }
 
-
-
   maintenance_window {
-    type = "WEEKLY"
-    day  = "SAT"
-    hour = 12
+    type = "ANYTIME"
   }
 
   host {
