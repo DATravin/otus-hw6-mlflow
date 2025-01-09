@@ -140,6 +140,14 @@ resource "yandex_mdb_postgresql_cluster" "cluster" {
   }
 }
 
+
+
+resource "yandex_mdb_postgresql_database" "db" {
+  cluster_id = yandex_mdb_postgresql_cluster.cluster.id
+  name       = var.postgresql_database_name
+  owner      = var.postgresql_user_name
+}
+
 resource "yandex_mdb_postgresql_user" "user" {
   cluster_id = yandex_mdb_postgresql_cluster.cluster.id
   name       = var.postgresql_user_name
@@ -151,13 +159,6 @@ resource "yandex_mdb_postgresql_user" "user" {
     roles         = ["ALL"]
   }
 }
-
-resource "yandex_mdb_postgresql_database" "db" {
-  cluster_id = yandex_mdb_postgresql_cluster.cluster.id
-  name       = var.postgresql_database_name
-  owner      = yandex_mdb_postgresql_user.user.name
-}
-
 
 # команда, чтобы автоматом сохранить некоторые константы для коннекта
 # resource "null_resource" "update_env_with_db_host" {
