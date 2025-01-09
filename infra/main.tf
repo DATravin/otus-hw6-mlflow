@@ -39,17 +39,7 @@ module "compute" {
   provider_config    = var.yc_config
 }
 
-module "mlflow" {
-  source             = "./modules/mlflow"
-  instance_user      = var.yc_instance_user
-  instance_name      = var.yc_instance_mlflow_name
-  service_account_id = module.iam.service_account_id
-  subnet_id          = module.network.subnet_id
-  ubuntu_image_id    = var.ubuntu_image_mlflow_id
-  public_key_path    = var.public_key_path
-  private_key_path   = var.private_key_path
-  provider_config    = var.yc_config
-}
+
 
 module "database" {
   source                = "./modules/database"
@@ -82,6 +72,24 @@ module "database_pg" {
   postgresql_user_name       = var.postgresql_user_name
   postgresql_user_password   = var.postgresql_user_password
   provider_config       = var.yc_config
+}
+
+module "mlflow" {
+  source             = "./modules/mlflow"
+  instance_user      = var.yc_instance_user
+  instance_name      = var.yc_instance_mlflow_name
+  service_account_id = module.iam.service_account_id
+  subnet_id          = module.network.subnet_id
+  ubuntu_image_id    = var.ubuntu_image_mlflow_id
+  public_key_path    = var.public_key_path
+  private_key_path   = var.private_key_path
+  provider_config    = var.yc_config
+
+  depends_on = [
+    module.storage,
+    module.database,
+    module.database_pg
+  ]
 }
 
 resource "local_file" "variables_file" {
