@@ -181,7 +181,8 @@ resource "null_resource" "update_env" {
       MLFLOW_HOST=${module.mlflow.external_ip_address}
       MLFLOW_ADMIN_PASSWORD=${module.mlflow.instance_id}
       DB_HOST=${module.database.db_host_fqdn}
-      DB_HOST_PG=${module.database_pg.db_host_fqdn}
+      DB_PG_HOST=${module.database_pg.db_host_fqdn}
+
 
       # Замена пустых переменных в .env
       sed -i "s|^AIRFLOW_HOST=.*|AIRFLOW_HOST=$AIRFLOW_HOST|" ../.env
@@ -193,7 +194,7 @@ resource "null_resource" "update_env" {
       sed -i "s|^MLFLOW_HOST=.*|MLFLOW_HOST=$MLFLOW_HOST|" ../.env
       sed -i "s|^MLFLOW_ADMIN_PASSWORD=.*|MLFLOW_ADMIN_PASSWORD=$MLFLOW_ADMIN_PASSWORD|" ../.env
       sed -i "s|^DB_HOST=.*|DB_HOST=$DB_HOST|" ../.env
-      sed -i "s|^DB_HOST_PG=.*|DB_HOST_PG=$DB_HOST_PG|" ../.env
+      sed -i "s|^DB_PG_HOST=.*|DB_PG_HOST=$DB_PG_HOST|" ../.env
     EOT
   }
 

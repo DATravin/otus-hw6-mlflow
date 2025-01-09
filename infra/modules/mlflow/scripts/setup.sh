@@ -1,30 +1,62 @@
 #!/bin/bash
 
+# мое
+
+# Функция для логирования
 function log() {
-    echo "[$(date +'%Y-%m-%d %H:%M:%S')]: $1"
+    sep="----------------------------------------------------------"
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $sep " | tee -a $HOME/user_data_execution.log
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] [INFO] $1" | tee -a $HOME/user_data_execution.log
 }
 
-# Добавляем пользователя ubuntu в группу airflow
-log "Adding ubuntu user to airflow group"
-sudo usermod -aG airflow ubuntu
+# Устанавливаем yc CLI
+log "Installing yc CLI"
+export HOME="/home/ubuntu"
+curl https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
 
-# Изменяем владельца директории DAGs на airflow и устанавливаем групповые права на запись
-log "Changing owner of DAGs directory to airflow"
-sudo chown airflow:airflow /home/airflow/dags
-sudo chmod 775 /home/airflow/dags
+# Проверяем, что yc доступен
+if command -v yc &> /dev/null; then
+    log "yc CLI is now available"
+    yc --version
+else
+    log "yc CLI is still not available. Adding it to PATH manually"
+    export PATH="$PATH:$HOME/yandex-cloud/bin"
+    yc --version
+fi
 
-# Устанавливаем SGID бит, чтобы новые файлы наследовали группу airflow
-log "Setting SGID bit on DAGs directory"
-sudo chmod g+s /home/airflow/dags
+# Устанавливаем библиотеки
+log "Installing libs"
+sudo apt-get update
+sudo apt-get -y install python3-pip
+sudo pip install mlflow
+sudo pip install psycopg2-binary
+sudo pip install boto3
+sudo pip install s3cmd
+sudo pip install pandas
 
-# Отключаем примеры DAGs в airflow.cfg и устанавливаем интервал проверки директории
-log "Configuring airflow.cfg"
-sudo sed -i 's/load_examples = True/load_examples = False/' /etc/airflow/airflow.cfg
-sudo sed -i 's/^dag_dir_list_interval = .*$/dag_dir_list_interval = 30/' /etc/airflow/airflow.cfg
+# Устанавливаем переменные
+export HOME="/home/ubuntu"
+export DB_USER=${DB_USER}
+export DB_PASS=${DB_PASS}
+export DB_HOST=${DB_HOST}
+export DB_PORT=6432
+export DB_NAME=${DB_NAME}
+export MLFLOW_S3_ENDPOINT_URL=https://storage.yandexcloud.net/
+export MLFLOW_TRACKING_URI=http://${INTERNAL_IP}:8000
 
-# Перезапускаем Airflow webserver и scheduler для применения изменений
-log "Restarting Airflow services"
-sudo systemctl restart airflow-webserver
-sudo systemctl restart airflow-scheduler
+# Настраиваем s3cmd как прокинуть туда переменные?
+log "Configuring s3cmd"
+cat <<EOF > /home/ubuntu/.s3cfg
+[default]
+access_key = ${access_key}
+secret_key = ${secret_key}
+host_base = storage.yandexcloud.net
+host_bucket = %(bucket)s.storage.yandexcloud.net
+use_https = True
+EOF
+
+chown ubuntu:ubuntu /home/ubuntu/.s3cfg
+chmod 600 /home/ubuntu/.s3cfg
+
 
 log "Setup completed successfully"
