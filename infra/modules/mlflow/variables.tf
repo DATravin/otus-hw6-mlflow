@@ -42,3 +42,31 @@ variable "provider_config" {
     cloud_id  = string
   })
 }
+
+# new
+variable "postgresql_database_name" {
+  type = string
+}
+
+variable "postgresql_user_name" {
+  type = string
+}
+
+variable "postgresql_user_password" {
+  type = string
+}
+
+variable "access_key" {
+  description = "Access key for the bucket"
+  type        = string
+}
+
+variable "secret_key" {
+  description = "Secret key for the bucket"
+  type        = string
+}
+
+variable "db_host_fqdn" {
+  description = "bd host "
+  type        = string
+}

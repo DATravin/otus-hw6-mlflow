@@ -75,15 +75,21 @@ module "database_pg" {
 }
 
 module "mlflow" {
-  source             = "./modules/mlflow"
-  instance_user      = var.yc_instance_user
-  instance_name      = var.yc_instance_mlflow_name
-  service_account_id = module.iam.service_account_id
-  subnet_id          = module.network.subnet_id
-  ubuntu_image_id    = var.ubuntu_image_mlflow_id
-  public_key_path    = var.public_key_path
-  private_key_path   = var.private_key_path
-  provider_config    = var.yc_config
+  source                     = "./modules/mlflow"
+  instance_user              = var.yc_instance_user
+  instance_name              = var.yc_instance_mlflow_name
+  service_account_id         = module.iam.service_account_id
+  subnet_id                  = module.network.subnet_id
+  ubuntu_image_id            = var.ubuntu_image_mlflow_id
+  public_key_path            = var.public_key_path
+  private_key_path           = var.private_key_path
+  provider_config            = var.yc_config
+  postgresql_database_name   = var.postgresql_database_name
+  postgresql_user_name       = var.postgresql_user_name
+  postgresql_user_password   = var.postgresql_user_password
+  access_key                 = module.iam.access_key
+  secret_key                 = module.iam.secret_key
+  db_host_fqdn               = module.database_pg.db_host_fqdn
 
 }
 

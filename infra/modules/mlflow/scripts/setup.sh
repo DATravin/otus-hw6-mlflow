@@ -42,7 +42,7 @@ export DB_HOST=${DB_HOST}
 export DB_PORT=6432
 export DB_NAME=${DB_NAME}
 export MLFLOW_S3_ENDPOINT_URL=https://storage.yandexcloud.net/
-export MLFLOW_TRACKING_URI=http://${INTERNAL_IP}:8000
+#export MLFLOW_TRACKING_URI=http://${INTERNAL_IP}:8000
 
 # Настраиваем s3cmd как прокинуть туда переменные?
 log "Configuring s3cmd"
