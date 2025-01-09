@@ -41,8 +41,9 @@ export DB_PASS=${postgresql_user_password}
 export DB_HOST=${db_host_fqdn}
 export DB_PORT=6432
 export DB_NAME=${postgresql_database_name}
-export MLFLOW_S3_ENDPOINT_URL=https://storage.yandexcloud.net/
 export S3_BUCKET=${s3_bucket_name}
+export MLFLOW_S3_ENDPOINT_URL=https://storage.yandexcloud.net/
+
 #export MLFLOW_TRACKING_URI=http://${INTERNAL_IP}:8000
 
 # Настраиваем s3cmd как прокинуть туда переменные?
