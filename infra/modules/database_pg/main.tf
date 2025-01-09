@@ -106,18 +106,18 @@
 
 # MySQL ресурсы
 resource "yandex_mdb_postgresql_cluster" "cluster" {
-  name        = var.yc_postgre_cluster_name
-  environment = var.yc_postgre_environment
+  name        = var.yc_postgresql_cluster_name
+  environment = var.yc_postgresql_environment
   network_id  = var.network_id
-  version     = var.yc_postgre_version
+  version     = var.yc_postgresql_version
 
   resources {
-    resource_preset_id = var.postgre_resource_preset_id
-    disk_type_id       = var.postgre_disk_type_id
-    disk_size          = var.postgre_disk_size
+    resource_preset_id = var.postgresql_resource_preset_id
+    disk_type_id       = var.postgresql_disk_type_id
+    disk_size          = var.postgresql_disk_size
   }
 
-  postgresql_config = var.postgre_config
+  postgresql_config = var.postgresql_config
 
   maintenance_window {
     type = "WEEKLY"
@@ -134,13 +134,13 @@ resource "yandex_mdb_postgresql_cluster" "cluster" {
 
 resource "yandex_mdb_postgresql_database" "db" {
   cluster_id = yandex_mdb_postgresql_cluster.cluster.id
-  name       = var.postgre_database_name
+  name       = var.postgresql_database_name
 }
 
 resource "yandex_mdb_postgresql_user" "user" {
   cluster_id = yandex_mdb_postgresql_cluster.cluster.id
-  name       = var.postgre_user_name
-  password   = var.postgre_user_password
+  name       = var.postgresql_user_name
+  password   = var.postgresql_user_password
 
   permission {
     database_name = yandex_mdb_postgresql_database.db.name
