@@ -70,3 +70,8 @@ variable "db_host_fqdn" {
   description = "bd host "
   type        = string
 }
+
+variable "s3_bucket_name" {
+  description = "name of bucket s3 "
+  type        = string
+}

@@ -90,7 +90,7 @@ module "mlflow" {
   access_key                 = module.iam.access_key
   secret_key                 = module.iam.secret_key
   db_host_fqdn               = module.database_pg.db_host_fqdn
-
+  s3_bucket_name             = module.storage.bucket
 }
 
 resource "local_file" "variables_file" {
