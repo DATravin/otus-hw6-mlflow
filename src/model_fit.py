@@ -1,6 +1,6 @@
-# import findspark
+import findspark
 
-# findspark.init()
+findspark.init()
 
 import os
 from loguru import logger
@@ -17,7 +17,7 @@ from pyspark.ml.evaluation import BinaryClassificationEvaluator
 from pyspark.sql import types as T
 from pyspark.sql.types import IntegerType,LongType,DoubleType,StringType,ArrayType
 from hyperopt import fmin, tpe, hp, STATUS_OK, Trials, SparkTrials, Trials
-import mlflow
+#import mlflow
 import pandas as pd
 
 numericColumnsFinal =['term_amount_min',
@@ -104,9 +104,9 @@ def objective(params, train_data, test_data):
 
     auc = evaluator.evaluate(rf_model.transform(test_data))
 
-    with mlflow.start_run():
-        mlflow.log_params(params)
-        mlflow.log_metric('auc', auc)
+    # with mlflow.start_run():
+    #     mlflow.log_params(params)
+    #     mlflow.log_metric('auc', auc)
 
     return {'loss': -auc, 'status': STATUS_OK}
 
@@ -210,7 +210,7 @@ def main():
 
     trials = Trials()
 
-    mlflow.set_experiment('classification')
+    #mlflow.set_experiment('classification')
 
     best = fmin(
         fn=partial(
@@ -234,7 +234,7 @@ if __name__ == "__main__":
     bucket_name = args.bucket
     mlflow_ip = args.mlflow
 
-    os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'https://storage.yandexcloud.net'
-    os.environ['MLFLOW_TRACKING_URI']='http://{mlflow_ip}:8000'
+    # os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'https://storage.yandexcloud.net'
+    # os.environ['MLFLOW_TRACKING_URI']='http://{mlflow_ip}:8000'
 
     main()
