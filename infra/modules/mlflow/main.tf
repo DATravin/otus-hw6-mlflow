@@ -49,25 +49,25 @@ resource "yandex_compute_instance" "vm" {
     host        = self.network_interface.0.nat_ip_address
   }
 
-  # provisioner "file" {
-  #   source      = "${path.module}/scripts/setup.sh"
-  #   destination = "/home/${var.instance_user}/setup.sh"
-  # }
-
   provisioner "file" {
-    content = templatefile("${path.module}/scripts/setup.sh", {
-      postgresql_user_name     = var.postgresql_user_name
-      postgresql_database_name = var.postgresql_database_name
-      postgresql_user_password = var.postgresql_user_password
-      db_host_fqdn             = var.db_host_fqdn
-      private_key              = file(var.private_key_path)
-      access_key               = var.access_key
-      secret_key               = var.secret_key
-      s3_bucket_name           = var.s3_bucket_name
-      }
-    )
+    source      = "${path.module}/scripts/setup.sh"
     destination = "/home/${var.instance_user}/setup.sh"
   }
+
+  # provisioner "file" {
+  #   content = templatefile("${path.module}/scripts/setup.sh", {
+  #     postgresql_user_name     = var.postgresql_user_name
+  #     postgresql_database_name = var.postgresql_database_name
+  #     postgresql_user_password = var.postgresql_user_password
+  #     db_host_fqdn             = var.db_host_fqdn
+  #     private_key              = file(var.private_key_path)
+  #     access_key               = var.access_key
+  #     secret_key               = var.secret_key
+  #     s3_bucket_name           = var.s3_bucket_name
+  #     }
+  #   )
+  #   destination = "/home/${var.instance_user}/setup.sh"
+  # }
 
   provisioner "remote-exec" {
     inline = [
