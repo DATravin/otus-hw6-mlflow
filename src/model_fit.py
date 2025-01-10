@@ -1,6 +1,6 @@
-import findspark
+# import findspark
 
-findspark.init()
+# findspark.init()
 
 import os
 from loguru import logger
