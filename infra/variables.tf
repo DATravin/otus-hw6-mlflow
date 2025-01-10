@@ -26,6 +26,10 @@ variable "yc_bucket_name" {
   type = string
 }
 
+variable "yc_cold_bucket_name" {
+  type = string
+}
+
 variable "yc_storage_endpoint_url" {
   type = string
   default = "https://storage.yandexcloud.net"

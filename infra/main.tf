@@ -101,10 +101,11 @@ resource "local_file" "variables_file" {
     YC_SUBNET_ID      = module.network.subnet_id
     YC_SSH_PUBLIC_KEY = trimspace(file(var.public_key_path))
     # S3
-    S3_ENDPOINT_URL = var.yc_storage_endpoint_url
-    S3_ACCESS_KEY   = module.iam.access_key
-    S3_SECRET_KEY   = module.iam.secret_key
-    S3_BUCKET_NAME  = module.storage.bucket
+    S3_ENDPOINT_URL     = var.yc_storage_endpoint_url
+    S3_ACCESS_KEY       = module.iam.access_key
+    S3_SECRET_KEY       = module.iam.secret_key
+    S3_BUCKET_NAME      = module.storage.bucket
+    S3_BUCKET_NAME_COLD = var.yc_cold_bucket_name
     # Data Proc
     DP_SA_AUTH_KEY_PUBLIC_KEY = module.iam.public_key
     DP_SA_PATH                = local.authorized_key_path

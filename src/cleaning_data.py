@@ -58,9 +58,9 @@ def transform_data(input_path,output_path):
 
     spark = get_spark()
     logger.info("Spark session has been estableshed")
-    
+
     logger.info("check_existing_new_data")
-    
+
     try:
         df_exists = spark.read.parquet(output_path)
         partitions = (df_exists
@@ -69,19 +69,19 @@ def transform_data(input_path,output_path):
                     .withColumn('date_key', F.col('date_key').cast(StringType()))
                     .distinct()
                    ).collect()
-        
+
         ex_partitions = [str(row[0]) for row in partitions]
-    
+
     except Exception:
-        
-        logger.info("There is no data")  
+
+        logger.info("There is no data")
         ex_partitions = []
-        
-        
-    logger.info(f"Existing partitions: {ex_partitions}")    
-        
-        
-    logger.info(f"read data from : {input_path}")      
+
+
+    logger.info(f"Existing partitions: {ex_partitions}")
+
+
+    logger.info(f"read data from : {input_path}")
 
     sdf = spark.read.text(input_path)
 
@@ -100,20 +100,20 @@ def transform_data(input_path,output_path):
                 .drop(*['value'])
                 .filter(~F.lower(F.col('tranaction_id')).like('%tranaction_id%'))
                 .withColumn('date_key', F.to_date(F.col('tx_datetime')))
-                .withColumn('date_key', F.col('date_key').cast(StringType())) 
-                .filter(~F.col('date_key').isin(ex_partitions)) 
+                .withColumn('date_key', F.col('date_key').cast(StringType()))
+                .filter(~F.col('date_key').isin(ex_partitions))
                )
-    
+
     if sdf_split.count()==0:
         logger.info("There is no new partitions")
         sys.exit()
     else:
         logger.info("There is new partitions. Start cleaning")
-        
-    
-    
-    
-    
+
+
+
+
+
 
     sdf_agg = (
                 sdf_split
@@ -163,15 +163,15 @@ def transform_data(input_path,output_path):
                 .withColumn('tx_time_days', F.col('tx_time_days').cast(LongType()))
                 .withColumn('tx_fraud', F.col('tx_fraud').cast(IntegerType()))
                 .withColumn('tx_fraud_scenario', F.col('tx_fraud_scenario').cast(IntegerType()))
-                
+
                 )
 
     mode ="append"
     fmt= "parquet"
     partition_cols= ("date_key",),
-    
+
     num_out_partitions=1
-    
+
     if num_out_partitions:
         sdf_clean = sdf_clean.repartition(num_out_partitions)
 
@@ -186,8 +186,8 @@ def transform_data(input_path,output_path):
 
     logger.info(f"data has been saved to : {output_path} succesfully")
     logger.info("job is done")
-    
-    
+
+
 def main():
     """Main function to execute the PySpark job"""
     parser = ArgumentParser()
@@ -200,10 +200,10 @@ def main():
 
     input_path = f"s3a://{bucket_name}/input_data/*.txt"
     output_path = f"s3a://{bucket_name}/output_data/clean_data.parquet"
-    
+
     transform_data(input_path, output_path)
-    
-    
+
+
 
 if __name__ == '__main__':
     main()
