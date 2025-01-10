@@ -139,7 +139,7 @@ with DAG(
         args=["--bucket", S3_BUCKET_NAME_COLD, "--mlflow", MLFLOW_HOST],
         dag=ingest_dag,
         properties = {'spark.submit.deployMode': 'cluster',
-                    'spark.yarn.dist.archives': f's3a://{S3_BUCKET_NAME_COLD}/venvs/hyp_mlfl_pand_log.tar.gz#venv',
+                    'spark.yarn.dist.archives': f's3a://{S3_BUCKET_NAME_COLD}/venvs/hyp_mlf_pd_log_arg.tar.gz#venv',
                     'spark.yarn.appMasterEnv.PYSPARK_PYTHON': './venv/bin/python',
                     'spark.yarn.appMasterEnv.PYSPARK_DRIVER_PYTHON': './venv/bin/python'}
     )
