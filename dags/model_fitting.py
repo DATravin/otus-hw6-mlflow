@@ -99,7 +99,7 @@ setup_airflow_connections(YC_S3_CONNECTION, YC_SA_CONNECTION)
 
 # Настройки DAG
 with DAG(
-    dag_id="data_preprocess",
+    dag_id="model_pipeline",
     start_date=datetime(year=2024, month=1, day=20),
     schedule_interval=timedelta(minutes=60*24),
     catchup=False,
