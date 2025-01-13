@@ -20,95 +20,95 @@ from hyperopt import fmin, tpe, hp, STATUS_OK, Trials, SparkTrials, Trials
 import mlflow
 import pandas as pd
 
-# numericColumnsFinal =['term_amount_min',
-#          'term_amount_50perc',
-#          'term_amount_max',
-#          'tx_amount',
-#          'term_avg_amount_in_day_7d',
-#          'sh_bad_trans_per_cust',
-#          'cust_cnt_in_day_7d',
-#          'rel_cust_50perc',
-#          'sh_bad_days_per_term',
-#          'rel_cust_amount_to_max']
+numericColumnsFinal =['term_amount_min',
+         'term_amount_50perc',
+         'term_amount_max',
+         'tx_amount',
+         'term_avg_amount_in_day_7d',
+         'sh_bad_trans_per_cust',
+         'cust_cnt_in_day_7d',
+         'rel_cust_50perc',
+         'sh_bad_days_per_term',
+         'rel_cust_amount_to_max']
 
-# featureColumns = numericColumnsFinal
+featureColumns = numericColumnsFinal
 
-# def datamart(date_list,row,agg_cust,agg_term,list_for_fillna,sample_val):
+def datamart(date_list,row,agg_cust,agg_term,list_for_fillna,sample_val):
 
-#     eps = 1e-6
+    eps = 1e-6
 
-#     df = (row
-#                .filter(F.col('date_key').isin(date_list))
-#                .join(agg_term, on=['terminal_id','date_key'], how='left')
-#                .join(agg_cust, on=['customer_id','date_key'], how='left')
-#                .fillna(value=0,subset=list_for_fillna)
-#                #.withColumn("sh_bad_trans_per_cust", sdf['cust_bad_cnt_trans_7d'] / (sdf.cust_total_cnt_trans_7d + eps))
-#     #            .withColumn("sh_bad_trans_per_term", sdf.term_bad_cnt_trans_7d / (sdf.term_total_cnt_trans_7d + eps))
-#               )
+    df = (row
+               .filter(F.col('date_key').isin(date_list))
+               .join(agg_term, on=['terminal_id','date_key'], how='left')
+               .join(agg_cust, on=['customer_id','date_key'], how='left')
+               .fillna(value=0,subset=list_for_fillna)
+               #.withColumn("sh_bad_trans_per_cust", sdf['cust_bad_cnt_trans_7d'] / (sdf.cust_total_cnt_trans_7d + eps))
+    #            .withColumn("sh_bad_trans_per_term", sdf.term_bad_cnt_trans_7d / (sdf.term_total_cnt_trans_7d + eps))
+              )
 
-#     #sdf.printSchema()
+    #sdf.printSchema()
 
-#     df = (df
-
-
-#                .withColumn("sh_bad_trans_per_cust", df['cust_bad_cnt_trans_7d'] / (df['cust_total_cnt_trans_7d'] + eps))
-#                .withColumn("sh_bad_trans_per_term", df['term_bad_cnt_trans_7d'] / (df['term_total_cnt_trans_7d'] + eps))
-#                .withColumn("sh_bad_days_per_cust", df['cust_days_with_bad_trans_7d'] / (df['cust_active_days_7d'] + eps))
-#                .withColumn("sh_bad_days_per_term", df['term_days_with_bad_trans_7d'] / (df['term_active_days_7d'] + eps))
-#                .withColumn("sh_bad_trans_per_cust", df['cust_bad_cnt_trans_7d'] / (df['cust_total_cnt_trans_7d'] + eps))
-#                .withColumn("rel_cust_amount_to_max", (df['tx_amount']-df['cust_amount_min'])\
-#                            / (df['cust_amount_max'] - df['cust_amount_min'] + eps))
-#                .withColumn("rel_term_amount_to_max", (df['tx_amount']-df['term_amount_min'])\
-#                            / (df['term_amount_max'] - df['term_amount_min'] + eps))
-#                .withColumnRenamed('tx_fraud', 'target')
-
-#                )
-#     if sample_val<1 and sample_val>0:
-#         df = df.sample(sample_val)
-
-#     #train_sdf.printSchema()
-#     return df
+    df = (df
 
 
-# # Определяем пространство поиска для hyperopt
-# search_space = {
-#     'numTrees': hp.randint('numTrees', 50, 150),
-#     'maxDepth': hp.randint('maxDepth', 3,7)
-# }
+               .withColumn("sh_bad_trans_per_cust", df['cust_bad_cnt_trans_7d'] / (df['cust_total_cnt_trans_7d'] + eps))
+               .withColumn("sh_bad_trans_per_term", df['term_bad_cnt_trans_7d'] / (df['term_total_cnt_trans_7d'] + eps))
+               .withColumn("sh_bad_days_per_cust", df['cust_days_with_bad_trans_7d'] / (df['cust_active_days_7d'] + eps))
+               .withColumn("sh_bad_days_per_term", df['term_days_with_bad_trans_7d'] / (df['term_active_days_7d'] + eps))
+               .withColumn("sh_bad_trans_per_cust", df['cust_bad_cnt_trans_7d'] / (df['cust_total_cnt_trans_7d'] + eps))
+               .withColumn("rel_cust_amount_to_max", (df['tx_amount']-df['cust_amount_min'])\
+                           / (df['cust_amount_max'] - df['cust_amount_min'] + eps))
+               .withColumn("rel_term_amount_to_max", (df['tx_amount']-df['term_amount_min'])\
+                           / (df['term_amount_max'] - df['term_amount_min'] + eps))
+               .withColumnRenamed('tx_fraud', 'target')
+
+               )
+    if sample_val<1 and sample_val>0:
+        df = df.sample(sample_val)
+
+    #train_sdf.printSchema()
+    return df
 
 
-# def objective(params, train_data, test_data):
-#     logger.info(f"params {params}")
+# Определяем пространство поиска для hyperopt
+search_space = {
+    'numTrees': hp.randint('numTrees', 50, 150),
+    'maxDepth': hp.randint('maxDepth', 3,7)
+}
 
 
-#     assembler = VectorAssembler()\
-#     .setInputCols(featureColumns)\
-#     .setOutputCol("features")
+def objective(params, train_data, test_data):
+    logger.info(f"params {params}")
 
-#     scaler = MinMaxScaler()\
-#         .setInputCol("features")\
-#         .setOutputCol("scaledFeatures")
 
-#     rf = RandomForestClassifier()\
-#         .setFeaturesCol('scaledFeatures')\
-#         .setLabelCol('target')\
-#         .setMaxDepth(params['maxDepth'])\
-#         .setNumTrees(params['numTrees'])\
+    assembler = VectorAssembler()\
+    .setInputCols(featureColumns)\
+    .setOutputCol("features")
 
-#     pipeline = Pipeline(stages = [assembler,scaler,rf])
+    scaler = MinMaxScaler()\
+        .setInputCol("features")\
+        .setOutputCol("scaledFeatures")
 
-#     rf_model = pipeline.fit(train_data)
+    rf = RandomForestClassifier()\
+        .setFeaturesCol('scaledFeatures')\
+        .setLabelCol('target')\
+        .setMaxDepth(params['maxDepth'])\
+        .setNumTrees(params['numTrees'])\
 
-#     evaluator = BinaryClassificationEvaluator()\
-#             .setLabelCol('target')
+    pipeline = Pipeline(stages = [assembler,scaler,rf])
 
-#     auc = evaluator.evaluate(rf_model.transform(test_data))
+    rf_model = pipeline.fit(train_data)
 
-#     # with mlflow.start_run():
-#     #     mlflow.log_params(params)
-#     #     mlflow.log_metric('auc', auc)
+    evaluator = BinaryClassificationEvaluator()\
+            .setLabelCol('target')
 
-#     return {'loss': -auc, 'status': STATUS_OK}
+    auc = evaluator.evaluate(rf_model.transform(test_data))
+
+    # with mlflow.start_run():
+    #     mlflow.log_params(params)
+    #     mlflow.log_metric('auc', auc)
+
+    return {'loss': -auc, 'status': STATUS_OK}
 
 
 def main():
@@ -145,47 +145,47 @@ def main():
     agg_term_sdf = spark.read.parquet(agg_term_path)
     #agg_term_sdf.printSchema()
 
-    #logger.info("data upload ...")
+    logger.info("data upload ...")
 
-    # list_for_fillna = [
-    # 'term_active_days_7d',
-    #  'term_uniq_customer_7d',
-    #  'term_amount_50perc',
-    #  'term_total_cnt_trans_7d',
-    #  'term_amount_max',
-    #  'term_amount_min',
-    #  'term_bad_cnt_trans_7d',
-    #  'term_avg_amount_in_day_7d',
-    #  'term_cnt_in_day_7d',
-    #  'term_days_with_bad_trans_7d',
-    #  'cust_active_days_7d',
-    #  'cust_uniq_terminal_7d',
-    #  'cust_amount_50perc',
-    #  'cust_amount_max',
-    #  'cust_amount_min',
-    #  'cust_total_cnt_trans_7d',
-    #  'cust_bad_cnt_trans_7d',
-    #  'cust_avg_amount_in_day_7d',
-    #  'cust_cnt_in_day_7d',
-    #  'cust_days_with_bad_trans_7d',
-    #  'rel_cust_50perc',
-    # ]
+    list_for_fillna = [
+    'term_active_days_7d',
+     'term_uniq_customer_7d',
+     'term_amount_50perc',
+     'term_total_cnt_trans_7d',
+     'term_amount_max',
+     'term_amount_min',
+     'term_bad_cnt_trans_7d',
+     'term_avg_amount_in_day_7d',
+     'term_cnt_in_day_7d',
+     'term_days_with_bad_trans_7d',
+     'cust_active_days_7d',
+     'cust_uniq_terminal_7d',
+     'cust_amount_50perc',
+     'cust_amount_max',
+     'cust_amount_min',
+     'cust_total_cnt_trans_7d',
+     'cust_bad_cnt_trans_7d',
+     'cust_avg_amount_in_day_7d',
+     'cust_cnt_in_day_7d',
+     'cust_days_with_bad_trans_7d',
+     'rel_cust_50perc',
+    ]
 
-    # list_dates= row_sdf.select('date_key').distinct().collect()
-    # ld = [str(x[0]) for x in list_dates]
-    # start=min(ld)
-    # end=max(ld)
-    # time_keys = [
-    #     time_key.strftime("%Y-%m-%d") for time_key
-    #     in pd.date_range(start, end, freq='1D')
-    # ]
+    list_dates= row_sdf.select('date_key').distinct().collect()
+    ld = [str(x[0]) for x in list_dates]
+    start=min(ld)
+    end=max(ld)
+    time_keys = [
+        time_key.strftime("%Y-%m-%d") for time_key
+        in pd.date_range(start, end, freq='1D')
+    ]
 
 
 
-    # train_dates = time_keys[20:23]
-    # test_dates = time_keys[24]
+    train_dates = time_keys[20:23]
+    test_dates = time_keys[24]
 
-    # logger.info(f"traind perion {train_dates} test period {test_dates}")
+    logger.info(f"traind perion {train_dates} test period {test_dates}")
 
     # train_sdf = datamart(train_dates,row_sdf,agg_cust_sdf,agg_term_sdf,list_for_fillna,sample_val = 0.5)
     # test_sdf = datamart(test_dates,row_sdf,agg_cust_sdf,agg_term_sdf,list_for_fillna,sample_val = 1)
