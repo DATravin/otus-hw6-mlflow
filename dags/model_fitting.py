@@ -135,7 +135,7 @@ with DAG(
     poke_spark_processing = DataprocCreatePysparkJobOperator(
         task_id="dp-cluster-pyspark-task",
         #main_python_file_uri=f"s3a://{S3_BUCKET_NAME}/src/model_fit.py",
-        main_python_file_uri=f"s3a://{S3_BUCKET_NAME}/src/test_simple.py",
+        main_python_file_uri=f"s3a://{S3_BUCKET_NAME}/src/test_simple2.py",
         connection_id=YC_SA_CONNECTION.conn_id,
         args=["--bucket", S3_BUCKET_NAME_COLD, "--mlflow", MLFLOW_HOST],
         dag=ingest_dag,
