@@ -70,10 +70,19 @@ EOF
 chown ubuntu:ubuntu /home/ubuntu/.s3cfg
 chmod 600 /home/ubuntu/.s3cfg
 
+# log "add cert"
+# mkdir -p ~/.postgresql && \
+# wget "https://storage.yandexcloud.net/cloud-certs/CA.pem" \
+#     --output-document ~/.postgresql/root.crt && \
+# sudo chown ubuntu:ubuntu ~/.postgresql/root.crt && \
+# chmod 0600 ~/.postgresql/root.crt
+
+
 log "add cert"
 mkdir -p ~/.postgresql && \
 wget "https://storage.yandexcloud.net/cloud-certs/CA.pem" \
-    --output-document ~/.postgresql/root.crt && \
+    --output-document ~/.postgresql/root.crt
+sudo chown ubuntu:ubuntu ~/.postgresql/root.crt
 chmod 0600 ~/.postgresql/root.crt
 
 
