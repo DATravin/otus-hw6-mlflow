@@ -2,9 +2,9 @@
 
 # findspark.init()
 
-import os
+# import os
 #from loguru import logger
-from functools import partialS
+# from functools import partialS
 from argparse import ArgumentParser
 from pyspark.sql import SparkSession, DataFrame, functions as F
 from pyspark.sql.types import IntegerType,LongType,DoubleType,StringType
@@ -115,11 +115,18 @@ def main():
 
     #logger.info("Creating Spark Session ...")
 
+    # spark = SparkSession\
+    #     .builder\
+    #     .appName('Spark ML Research')\
+    #     .config('spark.sql.repl.eagerEval.enabled', True) \
+    #     .getOrCreate()
+
     spark = SparkSession\
         .builder\
         .appName('Spark ML Research')\
-        .config('spark.sql.repl.eagerEval.enabled', True) \
         .getOrCreate()
+
+    print('hello')
 
     #logger.info(spark)
 
