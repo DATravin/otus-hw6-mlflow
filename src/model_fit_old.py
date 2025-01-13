@@ -1,10 +1,10 @@
-# import findspark
+import findspark
 
-# findspark.init()
+findspark.init()
 
 import os
 from loguru import logger
-from functools import partial
+from functools import partialS
 from argparse import ArgumentParser
 from pyspark.sql import SparkSession, DataFrame, functions as F
 from pyspark.sql.types import IntegerType,LongType,DoubleType,StringType
@@ -17,7 +17,7 @@ from pyspark.ml.evaluation import BinaryClassificationEvaluator
 from pyspark.sql import types as T
 from pyspark.sql.types import IntegerType,LongType,DoubleType,StringType,ArrayType
 from hyperopt import fmin, tpe, hp, STATUS_OK, Trials, SparkTrials, Trials
-import mlflow
+#import mlflow
 import pandas as pd
 
 numericColumnsFinal =['term_amount_min',
@@ -104,69 +104,24 @@ def objective(params, train_data, test_data):
 
     auc = evaluator.evaluate(rf_model.transform(test_data))
 
-    th = 0.2
-    predictions = rf_model.transform(test_data)
-
-    predictions = (predictions
-              .withColumn('probability_arr', vector_to_array('probability'))
-              .withColumn('probability_one', F.col('probability_arr')[1])
-              .withColumn('pred_loc',
-                    F.when(F.col('probability_one') >= th, F.lit(1))
-                    .otherwise(F.lit(0)))
-              )
-
-    tp = predictions.filter((F.col("target") == 1) & (F.col("pred_loc") == 1)).count()
-    tn = predictions.filter((F.col("target") == 0) & (F.col("pred_loc") == 0)).count()
-    fp = predictions.filter((F.col("target") == 0) & (F.col("pred_loc") == 1)).count()
-    fn = predictions.filter((F.col("target") == 1) & (F.col("pred_loc") == 0)).count()
-
-    accuracy = (tp + tn) / (tp + tn + fp + fn)
-    precision = tp / (tp + fp)
-    recall = tp / (tp + fn)
-    f1 = 2*tp / (2*tp + fp +fn)
-    beta = 1.5
-    f_bet = (1+beta*beta)*tp / ((1+beta*beta)*tp+fp+beta*beta*fn)
-
-    dct_metrics = {
-        'auc': auc,
-        'accuracy': accuracy,
-        'recall': recall,
-        'precision': precision,
-        'f1': f1,
-        'f_bet': f_bet
-        }
-
-    with mlflow.start_run():
-        mlflow.log_params(params)
-        mlflow.log_metrics(dct_metrics)
-        # mlflow.log_metric('auc', auc)
-        # mlflow.log_metric('accuracy', accuracy)
-        # mlflow.log_metric('recall', recall)
-        # mlflow.log_metric('precision', precision)
-        # mlflow.log_metric('f1', f1)
-        # mlflow.log_metric('f_bet', f_bet)
+    # with mlflow.start_run():
+    #     mlflow.log_params(params)
+    #     mlflow.log_metric('auc', auc)
 
     return {'loss': -auc, 'status': STATUS_OK}
 
 
 def main():
 
-    #logger.info("Creating Spark Session ...")
-
-    # spark = SparkSession\
-    #     .builder\
-    #     .appName('Spark ML Research')\
-    #     .config('spark.sql.repl.eagerEval.enabled', True) \
-    #     .getOrCreate()
+    logger.info("Creating Spark Session ...")
 
     spark = SparkSession\
         .builder\
         .appName('Spark ML Research')\
+        .config('spark.sql.repl.eagerEval.enabled', True) \
         .getOrCreate()
 
-    print('hello')
-
-    #logger.info(spark)
+    logger.info(spark)
 
     # bucket_name = 'cold-s3-bucket'
     row_path = f"s3a://{bucket_name}/output_data/clean_data.parquet"
@@ -207,6 +162,13 @@ def main():
      'cust_cnt_in_day_7d',
      'cust_days_with_bad_trans_7d',
      'rel_cust_50perc',
+    #  'sh_bad_trans_per_cust',
+    #  'sh_bad_trans_per_term',
+    #  'sh_bad_days_per_cust',
+    #  'sh_bad_days_per_term',
+    #  'rel_cust_amount_to_max',
+    #  'rel_term_amount_to_max'
+
     ]
 
     list_dates= row_sdf.select('date_key').distinct().collect()
@@ -244,11 +206,11 @@ def main():
 
 
 
-    mlflow.set_experiment('classification')
+    # mlflow.set_experiment('classification')
 
     trials = Trials()
 
-    # #mlflow.set_experiment('classification')
+    #mlflow.set_experiment('classification')
 
     best = fmin(
         fn=partial(
@@ -272,7 +234,7 @@ if __name__ == "__main__":
     bucket_name = args.bucket
     mlflow_ip = args.mlflow
 
-    os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'https://storage.yandexcloud.net'
-    os.environ['MLFLOW_TRACKING_URI'] = f'http://{mlflow_ip}:8000'
+    # os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'https://storage.yandexcloud.net'
+    # os.environ['MLFLOW_TRACKING_URI']='http://{mlflow_ip}:8000'
 
     main()
