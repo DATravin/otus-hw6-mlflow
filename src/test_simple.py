@@ -17,8 +17,8 @@ from pyspark.ml.evaluation import BinaryClassificationEvaluator
 from pyspark.sql import types as T
 from pyspark.sql.types import IntegerType,LongType,DoubleType,StringType,ArrayType
 from hyperopt import fmin, tpe, hp, STATUS_OK, Trials, SparkTrials, Trials
-# import mlflow
-# import pandas as pd
+import mlflow
+import pandas as pd
 
 # numericColumnsFinal =['term_amount_min',
 #          'term_amount_50perc',
