@@ -104,9 +104,42 @@ def objective(params, train_data, test_data):
 
     auc = evaluator.evaluate(rf_model.transform(test_data))
 
+    th = 0.2
+    predictions = rf_model.transform(test_data)
+
+    predictions = (predictions
+              .withColumn('probability_arr', vector_to_array('probability'))
+              .withColumn('probability_one', F.col('probability_arr')[1])
+              .withColumn('pred_loc',
+                    F.when(F.col('probability_one') >= th, F.lit(1))
+                    .otherwise(F.lit(0)))
+              )
+
+    tp = predictions.filter((F.col("target") == 1) & (F.col("pred_loc") == 1)).count()
+    tn = predictions.filter((F.col("target") == 0) & (F.col("pred_loc") == 0)).count()
+    fp = predictions.filter((F.col("target") == 0) & (F.col("pred_loc") == 1)).count()
+    fn = predictions.filter((F.col("target") == 1) & (F.col("pred_loc") == 0)).count()
+
+    accuracy = (tp + tn) / (tp + tn + fp + fn)
+    precision = tp / (tp + fp)
+    recall = tp / (tp + fn)
+    f1 = 2*tp / (2*tp + fp +fn)
+    beta = 1.5
+    f_bet = (1+beta*beta)*tp / ((1+beta*beta)*tp+fp+beta*beta*fn)
+
+    dct_metrics = {
+        'auc': auc,
+        'accuracy': accuracy,
+        'recall': recall,
+        'precision': precision,
+        'f1': f1,
+        'f_bet': f_bet
+        }
+
     with mlflow.start_run():
         mlflow.log_params(params)
-        mlflow.log_metric('auc', auc)
+        mlflow.log_metric(dct_metrics)
+
 
     return {'loss': -auc, 'status': STATUS_OK}
 
