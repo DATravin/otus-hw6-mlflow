@@ -2,9 +2,9 @@
 
 # findspark.init()
 
-import os
-from loguru import logger
-from functools import partialS
+# import os
+# from loguru import logger
+# from functools import partialS
 from argparse import ArgumentParser
 from pyspark.sql import SparkSession, DataFrame, functions as F
 from pyspark.sql.types import IntegerType,LongType,DoubleType,StringType
@@ -17,8 +17,8 @@ from pyspark.ml.evaluation import BinaryClassificationEvaluator
 from pyspark.sql import types as T
 from pyspark.sql.types import IntegerType,LongType,DoubleType,StringType,ArrayType
 from hyperopt import fmin, tpe, hp, STATUS_OK, Trials, SparkTrials, Trials
-import mlflow
-import pandas as pd
+# import mlflow
+# import pandas as pd
 
 # numericColumnsFinal =['term_amount_min',
 #          'term_amount_50perc',
@@ -234,7 +234,7 @@ if __name__ == "__main__":
     bucket_name = args.bucket
     mlflow_ip = args.mlflow
 
-    os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'https://storage.yandexcloud.net'
-    os.environ['MLFLOW_TRACKING_URI']='http://{mlflow_ip}:8000'
+    # os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'https://storage.yandexcloud.net'
+    # os.environ['MLFLOW_TRACKING_URI']='http://{mlflow_ip}:8000'
 
     main()
