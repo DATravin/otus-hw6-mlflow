@@ -229,10 +229,10 @@ if __name__ == "__main__":
 
     parser = ArgumentParser()
     parser.add_argument("--bucket", required=True, help="S3 bucket name")
-    #parser.add_argument("--mlflow", required=True, help="Mlflow uri")
+    parser.add_argument("--mlflow", required=True, help="Mlflow uri")
     args = parser.parse_args()
     bucket_name = args.bucket
-    #mlflow_ip = args.mlflow
+    mlflow_ip = args.mlflow
 
     # os.environ['MLFLOW_S3_ENDPOINT_URL'] = 'https://storage.yandexcloud.net'
     # os.environ['MLFLOW_TRACKING_URI']='http://{mlflow_ip}:8000'
