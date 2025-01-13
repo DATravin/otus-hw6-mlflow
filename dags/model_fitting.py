@@ -32,8 +32,6 @@ S3_SOURCE_BUCKET = S3_BUCKET_NAME[:]  # YC S3 bucket for pyspark source files
 S3_DP_LOGS_BUCKET = S3_BUCKET_NAME + "/airflow_logs/"  # YC S3 bucket for Data Proc logs
 S3_BUCKET_NAME_COLD = Variable.get("S3_BUCKET_NAME_COLD")
 
-S3_SOURCE_BUCKET = "airflow-bucket-8104985a9b86f66e"
-
 # Переменные для подключения к MLFLOW
 MLFLOW_HOST = Variable.get("MLFLOW_HOST")
 
