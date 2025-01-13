@@ -18,6 +18,7 @@ from pyspark.sql import types as T
 from pyspark.sql.types import IntegerType,LongType,DoubleType,StringType,ArrayType
 from hyperopt import fmin, tpe, hp, STATUS_OK, Trials, SparkTrials, Trials
 import mlflow
+from mlflow.tracking import MlflowClient
 import pandas as pd
 
 numericColumnsFinal =['term_amount_min',
@@ -70,11 +71,35 @@ def datamart(date_list,row,agg_cust,agg_term,list_for_fillna,sample_val):
     return df
 
 
-# Определяем пространство поиска для hyperopt
-search_space = {
-    'numTrees': hp.randint('numTrees', 50, 150),
-    'maxDepth': hp.randint('maxDepth', 3,7)
-}
+# Функция для создания нового эксперимента или поднятия существующего
+def get_experiment_id(model_name):
+    experiment = mlflow.get_experiment_by_name(model_name)
+    if experiment:
+        return experiment.experiment_id
+    else:
+        return mlflow.create_experiment(model_name)
+
+
+# # Функция для регистрации новой модели в mlflow в stage="Staging"
+# def transit_model(model_name, run_id):
+#     client = MlflowClient()
+#     model_uri = "runs:/{}/{}".format(run_id, model_name)
+#     mv = mlflow.register_model(model_uri, model_name)
+#     # Если не нужно сразу переводить модель в Staging, то строку ниже закомментировать.
+#     # В этом случае новая модель или новая версия модели регистрируется в Stage=None
+#     client.transition_model_version_stage(name=model_name, version=mv.version, stage="Staging")
+
+
+# # Функция для смены STAGE по указанной версии модели
+# def mlflow_change_stage(model_name, version, stage):
+#     client = MlflowClient()
+#     mv = client.transition_model_version_stage(model_name, version, stage)
+
+# # Определяем пространство поиска для hyperopt
+# search_space = {
+#     'numTrees': hp.randint('numTrees', 50, 150),
+#     'maxDepth': hp.randint('maxDepth', 3,7)
+# }
 
 
 def objective(params, train_data, test_data):
@@ -262,6 +287,24 @@ def main():
         max_evals=5,
         trials=trials
     )
+
+    # model_best = trials.results[np.argmin([r['loss'] for r in trials.results])]['model']
+    # best_result = trials.results[np.argmin([r['loss'] for r in trials.results])]['loss']
+
+    # model_name = 'classification'
+
+    # experiment_id = get_experiment_id(model_name)
+
+    # with mlflow.start_run(experiment_id=experiment_id) as run:
+
+    #     run_id = run.info.run_id
+
+    #     mlflow.log_params(params)
+    #     mlflow.log_metric('auc', auc)
+
+
+    #     mlflow.catboost.log_model(model_2, model_name)
+    #     transit_model(model_name, run_id)
 
 
 if __name__ == "__main__":
