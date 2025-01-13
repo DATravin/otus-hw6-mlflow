@@ -129,6 +129,7 @@ def objective(params, train_data, test_data):
 
     dct_metrics = {
         'auc': auc,
+        'trashhold': th,
         'accuracy': accuracy,
         'recall': recall,
         'precision': precision,
