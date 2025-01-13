@@ -258,7 +258,7 @@ def main():
         ),
         space=search_space,
         algo=tpe.suggest,
-        max_evals=2,
+        max_evals=5,
         trials=trials
     )
 
