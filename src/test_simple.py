@@ -187,42 +187,42 @@ def main():
 
     logger.info(f"traind perion {train_dates} test period {test_dates}")
 
-    # train_sdf = datamart(train_dates,row_sdf,agg_cust_sdf,agg_term_sdf,list_for_fillna,sample_val = 0.5)
-    # test_sdf = datamart(test_dates,row_sdf,agg_cust_sdf,agg_term_sdf,list_for_fillna,sample_val = 1)
+    train_sdf = datamart(train_dates,row_sdf,agg_cust_sdf,agg_term_sdf,list_for_fillna,sample_val = 0.5)
+    test_sdf = datamart(test_dates,row_sdf,agg_cust_sdf,agg_term_sdf,list_for_fillna,sample_val = 1)
 
-    # numericColumnsFinal =['term_amount_min',
-    #      'term_amount_50perc',
-    #      'term_amount_max',
-    #      'tx_amount',
-    #      'term_avg_amount_in_day_7d',
-    #      'sh_bad_trans_per_cust',
-    #      'cust_cnt_in_day_7d',
-    #     # 'tx_fraud',
-    #      'rel_cust_50perc',
-    #      'sh_bad_days_per_term',
-    #      'rel_cust_amount_to_max']
+    numericColumnsFinal =['term_amount_min',
+         'term_amount_50perc',
+         'term_amount_max',
+         'tx_amount',
+         'term_avg_amount_in_day_7d',
+         'sh_bad_trans_per_cust',
+         'cust_cnt_in_day_7d',
+        # 'tx_fraud',
+         'rel_cust_50perc',
+         'sh_bad_days_per_term',
+         'rel_cust_amount_to_max']
 
-    # featureColumns = numericColumnsFinal
+    featureColumns = numericColumnsFinal
 
 
 
     # # mlflow.set_experiment('classification')
 
-    # trials = Trials()
+    trials = Trials()
 
     # #mlflow.set_experiment('classification')
 
-    # best = fmin(
-    #     fn=partial(
-    #         objective,
-    #         train_data=train_sdf,
-    #         test_data=test_sdf
-    #     ),
-    #     space=search_space,
-    #     algo=tpe.suggest,
-    #     max_evals=2,
-    #     trials=trials
-    # )
+    best = fmin(
+        fn=partial(
+            objective,
+            train_data=train_sdf,
+            test_data=test_sdf
+        ),
+        space=search_space,
+        algo=tpe.suggest,
+        max_evals=2,
+        trials=trials
+    )
 
 
 if __name__ == "__main__":
