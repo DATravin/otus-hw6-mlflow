@@ -139,7 +139,12 @@ def objective(params, train_data, test_data):
     with mlflow.start_run():
         mlflow.log_params(params)
         mlflow.log_metrics(dct_metrics)
-
+        # mlflow.log_metric('auc', auc)
+        # mlflow.log_metric('accuracy', accuracy)
+        # mlflow.log_metric('recall', recall)
+        # mlflow.log_metric('precision', precision)
+        # mlflow.log_metric('f1', f1)
+        # mlflow.log_metric('f_bet', f_bet)
 
     return {'loss': -auc, 'status': STATUS_OK}
 
