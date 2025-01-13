@@ -3,7 +3,7 @@
 # findspark.init()
 
 import os
-from loguru import logger
+#from loguru import logger
 from functools import partialS
 from argparse import ArgumentParser
 from pyspark.sql import SparkSession, DataFrame, functions as F
@@ -113,7 +113,7 @@ from pyspark.sql.types import IntegerType,LongType,DoubleType,StringType,ArrayTy
 
 def main():
 
-    logger.info("Creating Spark Session ...")
+    #logger.info("Creating Spark Session ...")
 
     spark = SparkSession\
         .builder\
@@ -121,7 +121,7 @@ def main():
         .config('spark.sql.repl.eagerEval.enabled', True) \
         .getOrCreate()
 
-    logger.info(spark)
+    #logger.info(spark)
 
     # bucket_name = 'cold-s3-bucket'
     row_path = f"s3a://{bucket_name}/output_data/clean_data.parquet"
@@ -138,7 +138,7 @@ def main():
     agg_term_sdf = spark.read.parquet(agg_term_path)
     #agg_term_sdf.printSchema()
 
-    logger.info("data upload ...")
+    #logger.info("data upload ...")
 
     # list_for_fillna = [
     # 'term_active_days_7d',
