@@ -136,8 +136,9 @@ with DAG(
     # 2 этап: запуск задания PySpark
     poke_spark_processing = DataprocCreatePysparkJobOperator(
         task_id="dp-cluster-pyspark-task",
-        main_python_file_uri=f"s3a://{S3_SOURCE_BUCKET}/src/test_simple2.py",
+        main_python_file_uri=f"s3a://{S3_SOURCE_BUCKET}/src/test_simple.py",
         connection_id=YC_SA_CONNECTION.conn_id,
+        args=["--bucket", S3_BUCKET_NAME,"--mlflow", MLFLOW_HOST],
         dag=ingest_dag,
     )
     # 3 этап: удаление Dataproc кластера
