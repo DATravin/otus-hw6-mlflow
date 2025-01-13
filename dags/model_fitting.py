@@ -140,6 +140,10 @@ with DAG(
         connection_id=YC_SA_CONNECTION.conn_id,
         args=["--bucket", S3_BUCKET_NAME_COLD, "--mlflow",MLFLOW_HOST],
         dag=ingest_dag,
+        properties = {'spark.submit.deployMode': 'cluster',
+                    'spark.yarn.dist.archives': f's3a://{S3_BUCKET_NAME_COLD}/venvs/hyp_mlf_pd_log_arg.tar.gz#venv1',
+                    'spark.yarn.appMasterEnv.PYSPARK_PYTHON': './venv1/bin/python',
+                    'spark.yarn.appMasterEnv.PYSPARK_DRIVER_PYTHON': './venv1/bin/python'}
     )
     # 3 этап: удаление Dataproc кластера
     delete_spark_cluster = DataprocDeleteClusterOperator(
