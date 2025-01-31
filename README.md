@@ -44,12 +44,15 @@ source pyspark_venv/bin/activate
 
 pip install venv-pack loguru pandas hyperopt mlflow argparse
 pip install venv-pack loguru pandas hyperopt mlflow argparse scipy
+pip install venv-pack loguru pandas hyperopt mlflow argparse scipy numpy
 
 venv-pack -o hyp_mlf_pd_log_arg.tar.gz
 venv-pack -o hyp_mlf_pd_log_arg_sc.tar.gz
+venv-pack -o hyp_mlf_pd_log_arg_sc_np.tar.gz
 
 hdfs dfs -copyFromLocal hyp_mlf_pd_log_arg.tar.gz s3a://cold-s3-bucket/venvs/
 hdfs dfs -copyFromLocal hyp_mlf_pd_log_arg_sc.tar.gz s3a://cold-s3-bucket/venvs/
+hdfs dfs -copyFromLocal hyp_mlf_pd_log_arg_sc_np.tar.gz s3a://cold-s3-bucket/venvs/
 
 6. Чтобы засетапить .sh через спарк submit:
 
